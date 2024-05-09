@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Chatbot Website</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .chat-box {
+        border: 1px solid #ccc;
+        padding: 20px;
+        overflow-y: scroll;
+        height: 300px;
+      }
+      .input-box {
+        display: flex;
+        position: relative;
+      }
+      .input-box input[type="text"] {
+        flex: 1;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px 0 0 5px;
+        outline: none;
+      }
+      .input-box button {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: 1px solid #007bff;
+        border-radius: 0 5px 5px 0;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        outline: none;
+      }
+      .suggestions {
+        position: absolute;
+        z-index: 1;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        max-height: 200px;
+        overflow-y: auto;
+        width: calc(100% - 80px);
+        margin-top: 40px;
+        border-radius: 5px;
+        display: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .suggestions p {
+        padding: 10px;
+        margin: 0;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .suggestions p:hover {
+        background-color: #f9f9f9;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Simple Chatbot Website</h1>
+      <div class="chat-box" id="chat-box"></div>
+      <div class="input-box">
+        <input
+          type="text"
+          id="user-input"
+          placeholder="Type your message..."
+          oninput="showSuggestions()"
+        />
+        <div class="suggestions" id="suggestions"></div>
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+
+    <script>
+      var chatData = {
+        hello: "Hi there! How can I assist you today?",
+        hi: "Hello! What can I help you with?",
+        "how are you": "I'm just a bot, but thanks for asking!",
+        "what is your name": "I'm just a bot.",
+        "what is your age": "I'm just a bot.",
+        "what is your gender": "I'm just a bot.",
+        "what is your favorite color": "I'm just a bot.",
+        "what is your favorite animal": "I'm just a bot.",
+        "what is your favorite movie": "I'm just a bot.",
+        "what is your favorite book": "I'm just a bot.",
+        "السلام عليكم": "مرحبا! كيف يمكنني مساعدتك في هذا الوقت؟",
+        "السلام عليكم ورحمة الله": "مرحبا! كيف يمكنني مساعدتك في هذا الوقت؟",
+        "السلام عليكم ورحمة الله وبركاتة": "وعليكم السلام ورحمة الله وبركاتة.",
+        "كيف حالك": "تمام احلي مسا عليك",
+        ازيك: "كويس الحمد لله",
+        "": "أتفضل اسأل!",
+        // Add more questions and answers here
+      }
+
+      function showSuggestions() {
+        var userInput = document
+          .getElementById("user-input")
+          .value.toLowerCase()
+        var suggestionsContainer = document.getElementById("suggestions")
+        suggestionsContainer.innerHTML = ""
+
+        for (var question in chatData) {
+          if (question.startsWith(userInput)) {
+            var suggestion = document.createElement("p")
+            suggestion.textContent = question
+            suggestion.onclick = function () {
+              document.getElementById("user-input").value = this.textContent
+              suggestionsContainer.innerHTML = ""
+            }
+            suggestionsContainer.appendChild(suggestion)
+          }
+        }
+
+        if (suggestionsContainer.children.length > 0) {
+          suggestionsContainer.style.display = "block"
+        } else {
+          suggestionsContainer.style.display = "none"
+        }
+      }
+
+      function sendMessage() {
+        var userInput = document.getElementById("user-input").value
+        var chatBox = document.getElementById("chat-box")
+
+        // Display user message
+        var userMessage = document.createElement("p")
+        userMessage.innerHTML = "<strong>You:</strong> " + userInput
+        chatBox.appendChild(userMessage)
+
+        // Get bot response based on user input
+        var botResponse = getBotResponse(userInput)
+
+        // Display bot response
+        var botReply = document.createElement("p")
+        botReply.innerHTML = "<strong>ChatBot:</strong> " + botResponse
+        chatBox.appendChild(botReply)
+
+        // Scroll to bottom of chat box
+        chatBox.scrollTop = chatBox.scrollHeight
+
+        // Clear user input
+        document.getElementById("user-input").value = ""
+
+        // Clear suggestions
+        document.getElementById("suggestions").innerHTML = ""
+      }
+
+      function getBotResponse(userInput) {
+        userInput = userInput.toLowerCase()
+
+        for (var question in chatData) {
+          if (userInput.includes(question)) {
+            return chatData[question]
+          }
+        }
+
+        return "I'm sorry, I don't understand. Can you please rephrase?"
+      }
+    </script>
+  </body>
+</html>
